@@ -1094,6 +1094,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6917544830f86f34994292a525706d92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIManager
+  stageText: {fileID: 1354491435}
+  relicCountText: {fileID: 315881988}
+  speedButton: {fileID: 415031031}
   clearPopup: {fileID: 1658094749}
   starText: {fileID: 1415155027}
   pausePopup: {fileID: 1041771979}
@@ -1328,7 +1331,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 415031032}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 380621061}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: OnSpeedButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &415031032
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -133,6 +133,7 @@ public class GridManager : MonoBehaviour
         relicObjects[new Vector2Int(x, y)] = relicObj;
 
         relicUsedCount++; // 성물 사용 횟수 증가
+        UIManager.Instance.UpdateRelicCount(relicUsedCount); // 성물 카운트 UI 업데이트
         Debug.Log("성물 사용 횟수: " + relicUsedCount);
         Debug.Log("성물 배치: " + x + ", " + y);
         TurnManager.Instance.EndPlayerTurn();
@@ -223,5 +224,6 @@ public class GridManager : MonoBehaviour
             }
         }
         relicUsedCount--; // 성물 1개 사용 취소
+        UIManager.Instance.UpdateRelicCount(relicUsedCount); // 되돌리기 시 성물 카운트 UI 업데이트
     }
 }
