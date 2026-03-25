@@ -60,6 +60,14 @@ public class CharacterManager : MonoBehaviour
     {
         StageData stageData = StageManager.Instance.stageData;
 
+        // 이동 방향에 따라 스프라이트 좌우 반전
+        // newPos.x > yongsaPos.x = 오른쪽 이동, Flip X 해제
+        // newPos.x < yongsaPos.x = 왼쪽 이동, Flip X 적용
+        // 상하 이동은 방향 유지 (x가 같으면 건드리지 않음)
+        SpriteRenderer sr = yongsaObject.GetComponent<SpriteRenderer>();
+        if (newPos.x > yongsaPos.x) { sr.flipX = true; }
+        else if (newPos.x < yongsaPos.x) { sr.flipX = false; }
+
         // 팬클럽 grid 이동
         for (int i = fanClubPositions.Count - 1; i > 0; i--)
         {
