@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: d9b30184a4e0af64da733a4fbf832740
+guid: 99b311bcee0174e45abc86e2b8f186e7
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 425564130346931896
-    second: youngsa_0
+      213: 7908398285955260395
+    second: "\uD32C\uD074\uB7FD_0"
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,12 +126,12 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: youngsa_0
+      name: "\uD32C\uD074\uB7FD_0"
       rect:
         serializedVersion: 2
-        x: 6
+        x: 1
         y: 0
-        width: 29
+        width: 40
         height: 42
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8b61a726258e7e500800000000000000
-      internalID: 425564130346931896
+      spriteID: befdba0375640cd60800000000000000
+      internalID: 7908398285955260395
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      youngsa_0: 425564130346931896
+      "\uD32C\uD074\uB7FD_0": 7908398285955260395
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

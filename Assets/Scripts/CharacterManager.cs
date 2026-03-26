@@ -30,6 +30,7 @@ public class CharacterManager : MonoBehaviour
     private List<Vector2Int> prevFanClubPositions;
     private int prevRemainingStartFanCount;
     private HashSet<Vector2Int> prevVisitedTiles;
+    private bool prevYongsaFlipX; // 용사 스프라이트 방향 저장
 
     void Awake()
     {
@@ -65,8 +66,8 @@ public class CharacterManager : MonoBehaviour
         // newPos.x < yongsaPos.x = 왼쪽 이동, Flip X 적용
         // 상하 이동은 방향 유지 (x가 같으면 건드리지 않음)
         SpriteRenderer sr = yongsaObject.GetComponent<SpriteRenderer>();
-        if (newPos.x > yongsaPos.x) { sr.flipX = true; }
-        else if (newPos.x < yongsaPos.x) { sr.flipX = false; }
+        if (newPos.x > yongsaPos.x) { sr.flipX = false; }
+        else if (newPos.x < yongsaPos.x) { sr.flipX = true; }
 
         // 팬클럽 grid 이동
         for (int i = fanClubPositions.Count - 1; i > 0; i--)
@@ -76,6 +77,15 @@ public class CharacterManager : MonoBehaviour
         if (fanClubPositions.Count > 0)
         {
             fanClubPositions[0] = yongsaPos;
+        }
+
+        // 팬클럽 스프라이트 방향 - 용사와 동일하게 반전
+        // SpriteRenderer sr은 위에서 이미 선언했으므로 재사용 불가, 별도로 처리
+        for (int i = 0; i < fanClubObjects.Count; i++)
+        {
+            SpriteRenderer fanSr = fanClubObjects[i].GetComponent<SpriteRenderer>();
+            if (newPos.x > yongsaPos.x) { fanSr.flipX = false; }
+            else if (newPos.x < yongsaPos.x) { fanSr.flipX = true; }
         }
 
         // 시작 팬클럽 생성
@@ -213,6 +223,9 @@ public class CharacterManager : MonoBehaviour
         prevFanClubPositions = new List<Vector2Int>(fanClubPositions);
         prevRemainingStartFanCount = remainingStartFanCount;
         prevVisitedTiles = new HashSet<Vector2Int>(visitedTiles);
+        // 용사 스프라이트 현재 방향 저장
+        SpriteRenderer sr = yongsaObject.GetComponent<SpriteRenderer>();
+        prevYongsaFlipX = sr.flipX;
     }
 
     // 저장된 상태로 복구 - 되돌리기 버튼 눌렀을 때 호출
@@ -245,6 +258,10 @@ public class CharacterManager : MonoBehaviour
         float x = yongsaPos.x - (stageData.width - 1) / 2f;
         float y = yongsaPos.y - (stageData.height - 1) / 2f;
         yongsaObject.transform.position = new Vector3(x, y, -1);
+
+        // 용사 스프라이트 방향 복구
+        SpriteRenderer sr = yongsaObject.GetComponent<SpriteRenderer>();
+        sr.flipX = prevYongsaFlipX;
 
         // GridManager 상태도 업데이트
         GridManager.Instance.UpdateCharacterPositions(yongsaPos, fanClubPositions);
