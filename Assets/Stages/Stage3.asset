@@ -21,6 +21,11 @@ MonoBehaviour:
   - 10001
   - 11111
   yongsaStartPos: {x: 2, y: 2}
-  startFanCount: 6
-  star3Threshold: 99
-  star2Threshold: 0
+  startFanCount: 5
+  star3Threshold: 2
+  star2Threshold: 3
+  startDialogue: "\uC790, \uD32C\uD074\uB7FD \uC5EC\uB7EC\uBD84. \uC218\uACE0 \uC880
+    \uD574\uC918. \uB098\uB294 \uB4A4\uC5D0\uC11C \uC9C0\uCF1C\uBCFC\uAC8C."
+  hintPositions:
+  - {x: 3, y: 1}
+  - {x: 1, y: 1}

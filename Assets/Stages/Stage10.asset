@@ -25,6 +25,9 @@ MonoBehaviour:
   - 000000000
   - 000000000
   yongsaStartPos: {x: 2, y: 1}
-  startFanCount: 3
-  star3Threshold: 999
-  star2Threshold: 0
+  startFanCount: 0
+  star3Threshold: 78
+  star2Threshold: 79
+  startDialogue: "\uC800, \uC800\uB807\uAC8C \uB9CE\uC740 \uD32C\uC774 \uC0DD\uAE38
+    \uC904\uC740... \uC544\uBB34\uD2BC \uC774\uAC78 \uC774\uC6A9\uD558\uBA74 \uB418\uB294
+    \uAC70\uC57C!"

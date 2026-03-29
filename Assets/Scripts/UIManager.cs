@@ -1,4 +1,4 @@
-﻿using TMPro;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -12,6 +12,7 @@ public class UIManager : MonoBehaviour
     public TMP_Text relicCountText;   // RelicCountText 오브젝트 연결
     public Button speedButton;        // SpeedButton 오브젝트 연결
     private TMP_Text speedButtonText; // 버튼 안 텍스트 (Start에서 자동으로 찾아옴)
+    public TMP_Text dialogueText;     // 악마 대사 텍스트 연결 (추가)
 
     [Header("클리어 팝업 연결")]
     public GameObject clearPopup;
@@ -47,6 +48,8 @@ public class UIManager : MonoBehaviour
         // 저장된 배속 상태 불러와서 버튼 텍스트 세팅
         bool isDoubleSpeed = PlayerPrefs.GetInt("IsDoubleSpeed", 0) == 1;
         speedButtonText.text = isDoubleSpeed ? "2배속" : "1배속";
+
+        ShowStartDialogue(); //스테이지 시작 대사 표시 호출
     }
 
     // 성물 카운트 업데이트 - GridManager.PlaceRelic()에서 호출
@@ -106,5 +109,24 @@ public class UIManager : MonoBehaviour
     public void OnExitButton()
     {
         SceneManager.LoadScene("StageSelectScene");
+    }
+
+    // 스테이지 시작 대사 표시 - Start()에서 호출
+    public void ShowStartDialogue()
+    {
+        StageData stageData = StageManager.Instance.stageData;
+        if (dialogueText != null)
+        {
+            dialogueText.text = stageData.startDialogue;
+        }
+    }
+
+    // 배치 불가 대사 표시 - GridManager에서 호출
+    public void ShowCantPlaceDialogue()
+    {
+        if (dialogueText != null)
+        {
+            dialogueText.text = "용사는 키가 작아서 그런 곳에 두면 못 본다고. 다른 곳에 놔봐.";
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 
 public class GridManager : MonoBehaviour
@@ -96,7 +96,6 @@ public class GridManager : MonoBehaviour
     // 성물 배치 함수 - 플레이어가 클릭한 칸에 성물 생성
     public void PlaceRelic(int x, int y)
     {
-        // 승리 판정 먼저 체크 (4방향 막힘)
         if (WinConditionChecker.Instance.CheckWin())
         {
             WinConditionChecker.Instance.TriggerWin();
@@ -106,36 +105,42 @@ public class GridManager : MonoBehaviour
         if (grid[x, y] != CellType.Empty)
         {
             Debug.Log("배치 불가: 빈 칸 아님 - 현재 상태: " + grid[x, y]);
+            UIManager.Instance.ShowCantPlaceDialogue(); //악마 배치불가 대사 호출
             return;
         }
-
-        // 성물 배치 전에 상태 저장 (되돌리기용) - Relic 박기 전에 저장해야 prevGrid가 깨끗함
-        CharacterManager.Instance.SaveState();
-        SaveState();
 
         // 임시로 성물 배치 후 경로 확인
         grid[x, y] = CellType.Relic;
 
         Vector2Int yongsaPos = CharacterManager.Instance.yongsaPos;
 
-        // 벽 또는 팬클럽으로 막혀 경로 없으면 배치 불가
+        // 경로 없으면 배치 불가 - SaveState() 호출 전에 리턴
         if (!AIManager.Instance.HasPathToRelic(yongsaPos, new Vector2Int(x, y)))
         {
             grid[x, y] = CellType.Empty;
             Debug.Log("배치 불가: 경로 없음");
+            UIManager.Instance.ShowCantPlaceDialogue(); //악마 배치불가 대사 호출
             return;
         }
 
-        // 경로 있으면 정식 배치
-        Vector3 pos = new Vector3((x - (StageManager.Instance.stageData.width - 1) / 2f),
-                                  (y - (StageManager.Instance.stageData.height - 1) / 2f), -1);
+        // 경로 확인 통과 후에 상태 저장
+        grid[x, y] = CellType.Empty;
+        CharacterManager.Instance.SaveState();
+        SaveState();
+        grid[x, y] = CellType.Relic; // 저장 완료 후 다시 Relic으로
+
+        // 정식 배치
+        Vector3 pos = new Vector3(
+            (x - (StageManager.Instance.stageData.width - 1) / 2f),
+            (y - (StageManager.Instance.stageData.height - 1) / 2f), -1);
         GameObject relicObj = Instantiate(relicPrefab, pos, Quaternion.identity);
         relicObjects[new Vector2Int(x, y)] = relicObj;
 
-        relicUsedCount++; // 성물 사용 횟수 증가
-        UIManager.Instance.UpdateRelicCount(relicUsedCount); // 성물 카운트 UI 업데이트
+        relicUsedCount++;
+        UIManager.Instance.UpdateRelicCount(relicUsedCount);
         Debug.Log("성물 사용 횟수: " + relicUsedCount);
         Debug.Log("성물 배치: " + x + ", " + y);
+        HintManager.Instance.ClearHint();       // 성물 배치 성공 시 힌트 하이라이트 제거
         TurnManager.Instance.EndPlayerTurn();
     }
 

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 [CreateAssetMenu(fileName = "StageData", menuName = "Yongsa/StageData")]
 public class StageData : ScriptableObject
 {
@@ -14,4 +14,10 @@ public class StageData : ScriptableObject
     [Header("3별 기준 (성물 사용 개수)")]
     public int star3Threshold; // 이 개수 이하면 3성
     public int star2Threshold; // 이 개수 이하면 2성 (초과면 1성)
+
+    [Header("악마 대사")]
+    [TextArea] public string startDialogue;      // 스테이지 시작 대사
+
+    [Header("힌트 설정")]
+    public Vector2Int[] hintPositions; // 힌트 좌표 순서대로 입력, 배열 길이 = 최대 힌트 횟수
 }

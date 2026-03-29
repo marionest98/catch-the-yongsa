@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d4d5a3f032436744a17a51d78f5c39a, type: 3}
+  m_Name: Stage8
+  m_EditorClassIdentifier: Assembly-CSharp::StageData
+  width: 9
+  height: 9
+  rows:
+  - 111111111
+  - 111000111
+  - 111111111
+  - 110000111
+  - 110010101
+  - 110010111
+  - 110010001
+  - 110010001
+  - 111111111
+  yongsaStartPos: {x: 7, y: 1}
+  startFanCount: 1
+  star3Threshold: 4
+  star2Threshold: 5
+  startDialogue: "\uB354 \uB113\uC740 \uACF3\uC774\uC796\uC544. \uADF8\uB798\uB3C4
+    \uC881\uC740 \uD1B5\uB85C\uAC00 \uC788\uC73C\uB2C8 \uC5B4\uB5BB\uAC8C\uB4E0 \uB420\uAC70\uC57C."
+  hintPositions:
+  - {x: 2, y: 1}
+  - {x: 7, y: 1}
+  - {x: 7, y: 2}
+  - {x: 6, y: 2}

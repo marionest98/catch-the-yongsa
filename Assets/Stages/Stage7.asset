@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d4d5a3f032436744a17a51d78f5c39a, type: 3}
+  m_Name: Stage7
+  m_EditorClassIdentifier: Assembly-CSharp::StageData
+  width: 7
+  height: 7
+  rows:
+  - 1111111
+  - 1000001
+  - 1000001
+  - 1111101
+  - 1111011
+  - 1111101
+  - 1000001
+  yongsaStartPos: {x: 1, y: 5}
+  startFanCount: 0
+  star3Threshold: 1
+  star2Threshold: 2
+  startDialogue: "\uC800\uAE30\uC5D0 \uC131\uBB3C\uC744 \uB193\uC73C\uBA74 \uC6A9\uC0AC
+    \uB140\uC11D\uC774 \uAF3C\uC9DD\uC5C6\uC774 \uAC07\uD788\uACA0\uC9C0. \uC644\uBCBD\uD574.\n\uC5B4?
+    \uAE38\uC774 \uB04A\uACA8\uC788\uC73C\uBA74 \uC6A9\uC0AC \uB140\uC11D\uC744 \uC720\uC778
+    \uBABB \uD558\uC796\uC544."
+  hintPositions:
+  - {x: 5, y: 3}
