@@ -11,7 +11,6 @@ public class HintManager : MonoBehaviour
     public GameObject hintPrefab; // Inspector에서 HintPrefab 연결
 
     [Header("UI 연결")]
-    public TMP_Text hintButtonText;  // 힌트 버튼 안 텍스트 - 남은 무료 힌트 수
     public TMP_Text hintCountText;   // 버튼 위 텍스트 - 사용횟수/전체힌트수
 
     private int currentHintIndex = 0;  // 현재까지 공개된 힌트 인덱스
@@ -96,13 +95,6 @@ public class HintManager : MonoBehaviour
         if (hintCountText != null)
         {
             hintCountText.text = currentHintIndex + "/" + stageData.hintPositions.Length;
-        }
-
-        // 버튼 텍스트: 남은 무료 힌트 수 (무료는 1개 고정)
-        if (hintButtonText != null)
-        {
-            int remaining = Mathf.Max(0, 1 - currentHintIndex);
-            hintButtonText.text = "힌트 " + remaining;
         }
     }
 
