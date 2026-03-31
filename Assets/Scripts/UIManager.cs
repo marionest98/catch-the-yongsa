@@ -2,6 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class UIManager : MonoBehaviour
 {
@@ -16,7 +17,11 @@ public class UIManager : MonoBehaviour
 
     [Header("클리어 팝업 연결")]
     public GameObject clearPopup;
-    public TMP_Text starText;
+    public Image star1Image;            // Star1 오브젝트 연결
+    public Image star2Image;            // Star2 오브젝트 연결
+    public Image star3Image;            // Star3 오브젝트 연결
+    public Sprite starActiveSprite;     // Active@4x 스프라이트 연결
+    public Sprite starUnactiveSprite;   // Unactive@4x 스프라이트 연결
 
     [Header("일시정지 팝업 연결")]
     public GameObject pausePopup;
@@ -77,8 +82,69 @@ public class UIManager : MonoBehaviour
     public void ShowClearPopup(int stars)
     {
         clearPopup.SetActive(true);
-        starText.text = stars + "성";
+        StartCoroutine(PlayStarAnimation(stars));
         Debug.Log("클리어 팝업 표시 - 별: " + stars + "개");
+    }
+
+    // 별 하나를 0→1.3→1.0 scale로 튀어오르게 채우는 코루틴
+    // image: 대상 별 / delay: 시작 전 대기 시간
+    private IEnumerator AnimateStar(Image image, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        // Unactive → Active 스프라이트 교체
+        image.sprite = starActiveSprite;
+
+        float duration = 0.25f; // 0→1.3 구간 시간
+        float bounce = 0.1f;    // 1.3→1.0 구간 시간
+
+        // scale 0 → 1.3 (커지는 구간)
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            float scale = Mathf.Lerp(0f, 1.3f, t);
+            image.transform.localScale = new Vector3(scale, scale, 1f);
+            yield return null;
+        }
+
+        // scale 1.3 → 1.0 (튕기는 구간)
+        elapsed = 0f;
+        while (elapsed < bounce)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / bounce);
+            float scale = Mathf.Lerp(1.3f, 1.0f, t);
+            image.transform.localScale = new Vector3(scale, scale, 1f);
+            yield return null;
+        }
+
+        image.transform.localScale = Vector3.one; // 정확히 1.0으로 고정
+    }
+
+    // 별 수에 따라 순서대로 애니메이션 실행
+    private IEnumerator PlayStarAnimation(int stars)
+    {
+        // 전부 Unactive + scale 0으로 초기화
+        star1Image.sprite = starUnactiveSprite;
+        star2Image.sprite = starUnactiveSprite;
+        star3Image.sprite = starUnactiveSprite;
+        star1Image.transform.localScale = Vector3.zero;
+        star2Image.transform.localScale = Vector3.zero;
+        star3Image.transform.localScale = Vector3.zero;
+
+        yield return new WaitForSeconds(0.3f); // 팝업 뜨고 잠깐 대기
+
+        // stars 개수만큼 순서대로 애니메이션
+        // yield return StartCoroutine(): 이 코루틴이 끝날 때까지 기다렸다가 다음 줄 실행
+        if (stars >= 1) { yield return StartCoroutine(AnimateStar(star1Image, 0f)); }
+        if (stars >= 2) { yield return StartCoroutine(AnimateStar(star2Image, 0.15f)); }
+        if (stars >= 3) { yield return StartCoroutine(AnimateStar(star3Image, 0.15f)); }
+
+        // 못 받은 별은 scale 1로 그냥 표시 (Unactive 상태 유지)
+        if (stars < 2) { star2Image.transform.localScale = Vector3.one; }
+        if (stars < 3) { star3Image.transform.localScale = Vector3.one; }
     }
 
     // 일시정지 팝업 표시 - PauseButton에서 호출
