@@ -25,7 +25,9 @@ public class UIManager : MonoBehaviour
 
     [Header("일시정지 팝업 연결")]
     public GameObject pausePopup;
-    public TMP_Text pauseStarText;
+    public Image pauseStar1Image;  // PausePopup Star1 연결
+    public Image pauseStar2Image;  // PausePopup Star2 연결
+    public Image pauseStar3Image;  // PausePopup Star3 연결
 
     void Awake()
     {
@@ -37,6 +39,16 @@ public class UIManager : MonoBehaviour
         // 팝업 숨기기
         clearPopup.SetActive(false);
         pausePopup.SetActive(false);
+
+        // 씬 안 모든 버튼에 클릭 후 선택 해제 자동 등록
+        // FindObjectsByType: 씬 안의 모든 Button 컴포넌트를 찾아주는 함수
+        foreach (Button btn in FindObjectsByType<Button>(FindObjectsSortMode.None))
+        {
+            btn.onClick.AddListener(() =>
+            {
+                UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
+            });
+        }
 
         // 스테이지 번호 표시 - PlayerPrefs에서 읽어서 한 번만 세팅
         int stageIndex = PlayerPrefs.GetInt("SelectedStage", 0);
@@ -67,6 +79,9 @@ public class UIManager : MonoBehaviour
     // TurnManager의 스페이스바 로직이랑 동일하게 처리
     public void OnSpeedButton()
     {
+        // 플레이어 턴이 아닐 때는 배속 변경 불가
+        if (TurnManager.Instance.currentTurn != TurnManager.TurnState.PlayerTurn) { return; }
+
         bool isDoubleSpeed = PlayerPrefs.GetInt("IsDoubleSpeed", 0) == 1;
         isDoubleSpeed = !isDoubleSpeed;
 
@@ -87,13 +102,13 @@ public class UIManager : MonoBehaviour
     }
 
     // 별 하나를 0→1.3→1.0 scale로 튀어오르게 채우는 코루틴
-    // image: 대상 별 / delay: 시작 전 대기 시간
-    private IEnumerator AnimateStar(Image image, float delay)
+    // image: 대상 별 / delay: 시작 전 대기 시간 / sprite: 사용할 스프라이트 (Active or Unactive)
+    private IEnumerator AnimateStar(Image image, float delay, Sprite sprite)
     {
         yield return new WaitForSeconds(delay);
 
-        // Unactive → Active 스프라이트 교체
-        image.sprite = starActiveSprite;
+        // 전달받은 스프라이트로 교체 (Active or Unactive)
+        image.sprite = sprite;
 
         float duration = 0.25f; // 0→1.3 구간 시간
         float bounce = 0.1f;    // 1.3→1.0 구간 시간
@@ -136,15 +151,11 @@ public class UIManager : MonoBehaviour
 
         yield return new WaitForSeconds(0.3f); // 팝업 뜨고 잠깐 대기
 
-        // stars 개수만큼 순서대로 애니메이션
+        // 별 수에 따라 Active/Unactive 스프라이트 전달
         // yield return StartCoroutine(): 이 코루틴이 끝날 때까지 기다렸다가 다음 줄 실행
-        if (stars >= 1) { yield return StartCoroutine(AnimateStar(star1Image, 0f)); }
-        if (stars >= 2) { yield return StartCoroutine(AnimateStar(star2Image, 0.15f)); }
-        if (stars >= 3) { yield return StartCoroutine(AnimateStar(star3Image, 0.15f)); }
-
-        // 못 받은 별은 scale 1로 그냥 표시 (Unactive 상태 유지)
-        if (stars < 2) { star2Image.transform.localScale = Vector3.one; }
-        if (stars < 3) { star3Image.transform.localScale = Vector3.one; }
+        yield return StartCoroutine(AnimateStar(star1Image, 0f, stars >= 1 ? starActiveSprite : starUnactiveSprite));
+        yield return StartCoroutine(AnimateStar(star2Image, 0.15f, stars >= 2 ? starActiveSprite : starUnactiveSprite));
+        yield return StartCoroutine(AnimateStar(star3Image, 0.15f, stars >= 3 ? starActiveSprite : starUnactiveSprite));
     }
 
     // 일시정지 팝업 표시 - PauseButton에서 호출
@@ -152,7 +163,16 @@ public class UIManager : MonoBehaviour
     {
         int currentStage = PlayerPrefs.GetInt("SelectedStage", 0);
         int bestStars = PlayerPrefs.GetInt("StarCount_" + currentStage, 0);
-        pauseStarText.text = bestStars > 0 ? bestStars + "성" : "미클리어";
+
+        // 별 수에 따라 Active/Unactive 스프라이트 교체
+        pauseStar1Image.sprite = bestStars >= 1 ? starActiveSprite : starUnactiveSprite;
+        pauseStar2Image.sprite = bestStars >= 2 ? starActiveSprite : starUnactiveSprite;
+        pauseStar3Image.sprite = bestStars >= 3 ? starActiveSprite : starUnactiveSprite;
+
+        // scale 초기화 (ClearPopup 애니메이션이 건드렸을 수 있음)
+        pauseStar1Image.transform.localScale = Vector3.one;
+        pauseStar2Image.transform.localScale = Vector3.one;
+        pauseStar3Image.transform.localScale = Vector3.one;
 
         pausePopup.SetActive(true);
         TurnManager.Instance.enabled = false;
@@ -177,6 +197,12 @@ public class UIManager : MonoBehaviour
         SceneManager.LoadScene("StageSelectScene");
     }
 
+    // 배속 버튼 텍스트 갱신 - TurnManager 스페이스바 입력 시 호출
+    public void UpdateSpeedButtonText(bool isDoubleSpeed)
+    {
+        speedButtonText.text = isDoubleSpeed ? "2배속" : "1배속";
+    }
+
     // 스테이지 시작 대사 표시 - Start()에서 호출
     public void ShowStartDialogue()
     {
@@ -194,5 +220,12 @@ public class UIManager : MonoBehaviour
         {
             dialogueText.text = "용사는 키가 작아서 그런 곳에 두면 못 본다고. 다른 곳에 놔봐.";
         }
+    }
+
+    // 버튼 클릭 후 선택 상태 해제 - 호버 정상 작동을 위해 필요
+    // 모든 버튼 OnClick에 이 함수 추가 등록
+    public void DeselectButton()
+    {
+        UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
     }
 }

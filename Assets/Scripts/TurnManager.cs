@@ -63,20 +63,28 @@ public class TurnManager : MonoBehaviour
 
     void Update()
     {
-        // 스페이스바로 2배속 토글
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)
+        // 스페이스바로 2배속 토글 (PC 전용)
+        if (Keyboard.current.spaceKey.wasPressedThisFrame && currentTurn == TurnState.PlayerTurn)    // 플레이어 턴일 때만 배속 변경 가능
         {
             isDoubleSpeed = !isDoubleSpeed;
             CharacterManager.Instance.moveSpeed = isDoubleSpeed ? 0.25f : 0.5f;
-            PlayerPrefs.SetInt("IsDoubleSpeed", isDoubleSpeed ? 1 : 0); // 배속 상태 저장
+            PlayerPrefs.SetInt("IsDoubleSpeed", isDoubleSpeed ? 1 : 0);
             PlayerPrefs.Save();
+            UIManager.Instance.UpdateSpeedButtonText(isDoubleSpeed);
             Debug.Log("이동 속도: " + (isDoubleSpeed ? "2배속" : "1배속"));
         }
 
-        // 플레이어 턴일 때 마우스 클릭 감지
-        if (currentTurn == TurnState.PlayerTurn && Mouse.current.leftButton.wasPressedThisFrame)
+        // 마우스 클릭 + 모바일 터치 동시 처리
+        if (currentTurn == TurnState.PlayerTurn &&
+            (Mouse.current.leftButton.wasPressedThisFrame ||
+            (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame)))
         {
             Vector2 mousePos = Mouse.current.position.ReadValue();
+            // 터치면 터치 위치 사용
+            if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
+            {
+                mousePos = Touchscreen.current.primaryTouch.position.ReadValue();
+            }
             Vector3 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
             int x = Mathf.RoundToInt(worldPos.x + (StageManager.Instance.stageData.width - 1) / 2f);
             int y = Mathf.RoundToInt(worldPos.y + (StageManager.Instance.stageData.height - 1) / 2f);
