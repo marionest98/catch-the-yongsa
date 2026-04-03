@@ -10,9 +10,9 @@ public class TitleManager : MonoBehaviour
 
     void Update()
     {
-        // 마우스 클릭 또는 터치 시 스테이지 선택 화면으로 전환
-        if (Mouse.current.leftButton.wasPressedThisFrame ||
-            (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame))
+        // 탭/클릭 시 스테이지 선택 화면으로 전환
+        // 입력 감지를 InputManager에 위임
+        if (InputManager.Instance.WasTapped())
         {
             SceneManager.LoadScene("StageSelectScene");
         }

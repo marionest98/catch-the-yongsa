@@ -63,8 +63,9 @@ public class TurnManager : MonoBehaviour
 
     void Update()
     {
-        // 스페이스바로 2배속 토글 (PC 전용)
-        if (Keyboard.current.spaceKey.wasPressedThisFrame && currentTurn == TurnState.PlayerTurn)    // 플레이어 턴일 때만 배속 변경 가능
+        // 스페이스바 배속 토글 - 플레이어 턴일 때만
+        // 입력 감지는 InputManager에 위임, 여기선 턴 상태 판단만
+        if (InputManager.Instance.WasSpacePressed() && currentTurn == TurnState.PlayerTurn)
         {
             isDoubleSpeed = !isDoubleSpeed;
             CharacterManager.Instance.moveSpeed = isDoubleSpeed ? 0.25f : 0.5f;
@@ -74,18 +75,11 @@ public class TurnManager : MonoBehaviour
             Debug.Log("이동 속도: " + (isDoubleSpeed ? "2배속" : "1배속"));
         }
 
-        // 마우스 클릭 + 모바일 터치 동시 처리
-        if (currentTurn == TurnState.PlayerTurn &&
-            (Mouse.current.leftButton.wasPressedThisFrame ||
-            (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame)))
+        // 클릭/터치로 성물 배치 - 플레이어 턴일 때만
+        // 입력 위치 변환도 InputManager에 위임
+        if (currentTurn == TurnState.PlayerTurn && InputManager.Instance.WasTapped())
         {
-            Vector2 mousePos = Mouse.current.position.ReadValue();
-            // 터치면 터치 위치 사용
-            if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
-            {
-                mousePos = Touchscreen.current.primaryTouch.position.ReadValue();
-            }
-            Vector3 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
+            Vector3 worldPos = InputManager.Instance.GetTapWorldPosition();
             int x = Mathf.RoundToInt(worldPos.x + (StageManager.Instance.stageData.width - 1) / 2f);
             int y = Mathf.RoundToInt(worldPos.y + (StageManager.Instance.stageData.height - 1) / 2f);
             if (x >= 0 && x < StageManager.Instance.stageData.width &&
